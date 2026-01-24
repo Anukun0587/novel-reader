@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ตาราง User - เก็บข้อมูลผู้ใช้
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  avatar    String?
+  role      Role     @default(READER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  novels         Novel[]
+  readingHistory ReadingHistory[]
+  bookmarks      Bookmark[]
+}
+
+enum Role {
+  READER
+  AUTHOR
+  ADMIN
+}
+
+model Novel {
+  id          String      @id @default(cuid())
+  title       String
+  description String      @db.Text
+  coverImage  String?
+  status      NovelStatus @default(ONGOING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  genres    Genre[]
+  chapters  Chapter[]
+  bookmarks Bookmark[]
+
+  @@index([authorId])
+}
+
+enum NovelStatus {
+  ONGOING
+  COMPLETED
+  HIATUS
+}
+
+model Genre {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  novels Novel[]
+}
+
+model Chapter {
+  id          String   @id @default(cuid())
+  number      Int
+  title       String
+  content     String   @db.Text
+  wordCount   Int      @default(0)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  novelId String
+  novel   Novel  @relation(fields: [novelId], references: [id], onDelete: Cascade)
+
+  readingHistory ReadingHistory[]
+
+  @@unique([novelId, number])
+  @@index([novelId])
+}
+
+model ReadingHistory {
+  id        String   @id @default(cuid())
+  readAt    DateTime @default(now())
+
+  userId    String
+  chapterId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([userId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId  String
+  novelId String
+
+  user  User  @relation(fields: [userId], references: [id])
+  novel Novel @relation(fields: [novelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, novelId])
+  @@index([userId])
+}
