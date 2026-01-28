@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
+import { ImageUpload } from './image-upload'
 
 interface Genre {
   id: string
@@ -18,12 +19,11 @@ export function NovelForm({ genres }: NovelFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [coverImage, setCoverImage] = useState<string | null>(null)
   const [selectedGenres, setSelectedGenres] = useState<string[]>([])
 
-  // Toggle เลือก/ยกเลิกหมวดหมู่
   const toggleGenre = (genreId: string) => {
     setSelectedGenres((prev) =>
       prev.includes(genreId)
@@ -32,7 +32,6 @@ export function NovelForm({ genres }: NovelFormProps) {
     )
   }
 
-  // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -45,6 +44,7 @@ export function NovelForm({ genres }: NovelFormProps) {
         body: JSON.stringify({
           title,
           description,
+          coverImage,
           genreIds: selectedGenres,
         }),
       })
@@ -55,8 +55,6 @@ export function NovelForm({ genres }: NovelFormProps) {
       }
 
       const novel = await response.json()
-
-      // ไปหน้านิยายที่สร้าง
       router.push(`/novels/${novel.id}`)
 
     } catch (err) {
@@ -68,12 +66,19 @@ export function NovelForm({ genres }: NovelFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Error Message */}
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
           {error}
         </div>
       )}
+
+      {/* ปกนิยาย */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          ปกนิยาย
+        </label>
+        <ImageUpload value={coverImage} onChange={setCoverImage} />
+      </div>
 
       {/* ชื่อนิยาย */}
       <div>

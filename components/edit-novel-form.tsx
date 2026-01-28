@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, Trash2 } from 'lucide-react'
+import { ImageUpload } from './image-upload'
 
 interface Genre {
   id: string
@@ -14,6 +15,7 @@ interface Novel {
   title: string
   description: string
   status: string
+  coverImage: string | null
   genres: Genre[]
 }
 
@@ -32,6 +34,7 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
   const [title, setTitle] = useState(novel.title)
   const [description, setDescription] = useState(novel.description)
   const [status, setStatus] = useState(novel.status)
+  const [coverImage, setCoverImage] = useState<string | null>(novel.coverImage)
   const [selectedGenres, setSelectedGenres] = useState<string[]>(
     novel.genres.map((g) => g.id)
   )
@@ -57,6 +60,7 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
           title,
           description,
           status,
+          coverImage,
           genreIds: selectedGenres,
         }),
       })
@@ -106,6 +110,14 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
           {error}
         </div>
       )}
+
+      {/* ปกนิยาย */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          ปกนิยาย
+        </label>
+        <ImageUpload value={coverImage} onChange={setCoverImage} />
+      </div>
 
       {/* ชื่อนิยาย */}
       <div>
@@ -204,7 +216,7 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
           <div className="bg-white rounded-xl p-6 max-w-md mx-4">
             <h3 className="text-xl font-bold text-gray-900 mb-2">ยืนยันการลบ</h3>
             <p className="text-gray-600 mb-6">
-              {`คุณต้องการลบนิยาย "${novel.title}" หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้ ตอนทั้งหมดจะถูกลบด้วย`}
+              คุณต้องการลบนิยาย &quot;{novel.title}&quot; หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้ ตอนทั้งหมดจะถูกลบด้วย
             </p>
             <div className="flex gap-4">
               <button

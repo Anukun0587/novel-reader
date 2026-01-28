@@ -35,7 +35,7 @@ export async function PATCH(
   }
 
   const body = await req.json()
-  const { title, description, status, genreIds } = body
+  const { title, description, status, coverImage, genreIds } = body
 
   const updatedNovel = await prisma.novel.update({
     where: { id },
@@ -43,6 +43,7 @@ export async function PATCH(
       ...(title && { title }),
       ...(description && { description }),
       ...(status && { status }),
+      ...(coverImage !== undefined && { coverImage }),
       ...(genreIds && {
         genres: {
           set: [],
