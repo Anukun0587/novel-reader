@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { Navbar } from '@/components/navbar'
-import { BookOpen, User, Calendar, BookmarkPlus, ChevronRight, Edit } from 'lucide-react'
+import { BookOpen, User, Calendar, ChevronRight, Edit } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ContinueReadingButton } from '@/components/continue-reading-button'
+import { BookmarkButton } from '@/components/bookmark-button'
 
 async function getNovel(id: string) {
     const novel = await prisma.novel.findUnique({
@@ -116,22 +118,12 @@ export default async function NovelDetailPage({
 
                             {/* Action Buttons */}
                             <div className="flex flex-wrap gap-3">
-                                {novel.chapters.length > 0 ? (
-                                    <Link
-                                        href={`/novels/${novel.id}/chapters/${novel.chapters[0].id}`}
-                                        className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium"
-                                    >
-                                        เริ่มอ่าน
-                                    </Link>
-                                ) : (
-                                    <span className="px-6 py-3 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                                        ยังไม่มีตอน
-                                    </span>
-                                )}
-                                <button className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50">
-                                    <BookmarkPlus className="h-5 w-5" />
-                                    บุ๊คมาร์ค
-                                </button>
+                                <ContinueReadingButton
+                                    novelId={novel.id}
+                                    firstChapterId={novel.chapters[0]?.id}
+                                />
+                                <BookmarkButton novelId={novel.id} />
+
                                 <Link
                                     href={`/novels/${novel.id}/write`}
                                     className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import { BookOpen, PenTool, Search, Menu, X } from 'lucide-react'
+import { BookOpen, PenTool, Search, Menu, X, Bookmark, Clock } from 'lucide-react'
 import { useState } from 'react'
 
 export function Navbar() {
@@ -61,6 +61,20 @@ export function Navbar() {
                         </SignedOut>
 
                         <SignedIn>
+                            <Link
+                                href="/bookmarks"
+                                className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+                            >
+                                <Bookmark className="h-4 w-4" />
+                                บุ๊คมาร์ค
+                            </Link>
+                            <Link
+                                href="/history"
+                                className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+                            >
+                                <Clock className="h-4 w-4" />
+                                ประวัติ
+                            </Link>
                             <Link
                                 href="/write"
                                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
@@ -133,6 +147,22 @@ export function Navbar() {
                             </SignedOut>
 
                             <SignedIn>
+                                <Link
+                                    href="/bookmarks"
+                                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    <Bookmark className="h-4 w-4" />
+                                    บุ๊คมาร์ค
+                                </Link>
+                                <Link
+                                    href="/history"
+                                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    <Clock className="h-4 w-4" />
+                                    ประวัติ
+                                </Link>
                                 <Link
                                     href="/write"
                                     className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"

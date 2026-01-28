@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { Navbar } from '@/components/navbar'
 import { ChevronLeft, ChevronRight, BookOpen, Home, Edit } from 'lucide-react'
 import Link from 'next/link'
+import { ReadingTracker } from '@/components/reading-tracker'
 
 async function getChapter(novelId: string, chapterId: string) {
     const chapter = await prisma.chapter.findUnique({
@@ -59,6 +60,7 @@ export default async function ReadChapterPage({
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
+            <ReadingTracker chapterId={chapterId} />
 
             {/* Chapter Navigation Top */}
             <div className="bg-white border-b sticky top-16 z-40">
