@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { Navbar } from '@/components/navbar'
 import { EditNovelForm } from '@/components/edit-novel-form'
 
-async function getNovelForEdit(id: string, clerkUserId: string) {
+async function getNovel(id: string, clerkUserId: string) {
   const dbUser = await prisma.user.findUnique({
     where: { clerkId: clerkUserId }
   })
@@ -14,7 +14,8 @@ async function getNovelForEdit(id: string, clerkUserId: string) {
   const novel = await prisma.novel.findUnique({
     where: { id },
     include: {
-      genres: true
+      genres: true,
+      tags: true
     }
   })
 
@@ -44,7 +45,7 @@ export default async function EditNovelPage({
   }
 
   const [novel, genres] = await Promise.all([
-    getNovelForEdit(id, userId),
+    getNovel(id, userId),
     getGenres()
   ])
 
@@ -56,12 +57,8 @@ export default async function EditNovelPage({
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <main className="max-w-3xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">แก้ไขนิยาย</h1>
-          <p className="text-gray-600">แก้ไขข้อมูลนิยายของคุณ</p>
-        </div>
-
+      <main className="max-w-2xl mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">แก้ไขนิยาย</h1>
         <EditNovelForm novel={novel} genres={genres} />
       </main>
     </div>

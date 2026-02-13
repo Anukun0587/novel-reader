@@ -4,8 +4,14 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, Trash2 } from 'lucide-react'
 import { ImageUpload } from './image-upload'
+import { TagInput } from './tag-input'
 
 interface Genre {
+  id: string
+  name: string
+}
+
+interface Tag {
   id: string
   name: string
 }
@@ -17,6 +23,7 @@ interface Novel {
   status: string
   coverImage: string | null
   genres: Genre[]
+  tags: Tag[]
 }
 
 interface EditNovelFormProps {
@@ -37,6 +44,9 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
   const [coverImage, setCoverImage] = useState<string | null>(novel.coverImage)
   const [selectedGenres, setSelectedGenres] = useState<string[]>(
     novel.genres.map((g) => g.id)
+  )
+  const [tags, setTags] = useState<string[]>(
+    novel.tags.map((t) => t.name)
   )
 
   const toggleGenre = (genreId: string) => {
@@ -62,6 +72,7 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
           status,
           coverImage,
           genreIds: selectedGenres,
+          tags,
         }),
       })
 
@@ -70,7 +81,7 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
         throw new Error(data.error || 'เกิดข้อผิดพลาด')
       }
 
-      router.push(`/novels/${novel.id}`)
+      router.push(`/dashboard/novels/${novel.id}`)
       router.refresh()
 
     } catch (err) {
@@ -94,7 +105,7 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
         throw new Error(data.error || 'เกิดข้อผิดพลาด')
       }
 
-      router.push('/novels')
+      router.push('/dashboard')
       router.refresh()
 
     } catch (err) {
@@ -177,16 +188,23 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
               key={genre.id}
               type="button"
               onClick={() => toggleGenre(genre.id)}
-              className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                selectedGenres.includes(genre.id)
+              className={`px-4 py-2 rounded-full text-sm transition-colors ${selectedGenres.includes(genre.id)
                   ? 'bg-indigo-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               {genre.name}
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Tags */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Tags
+        </label>
+        <TagInput tags={tags} onChange={setTags} />
       </div>
 
       {/* ปุ่ม */}
@@ -216,7 +234,7 @@ export function EditNovelForm({ novel, genres }: EditNovelFormProps) {
           <div className="bg-white rounded-xl p-6 max-w-md mx-4">
             <h3 className="text-xl font-bold text-gray-900 mb-2">ยืนยันการลบ</h3>
             <p className="text-gray-600 mb-6">
-              คุณต้องการลบนิยาย &quot;{novel.title}&quot; หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้ ตอนทั้งหมดจะถูกลบด้วย
+              คุณต้องการลบนิยาย &quot;{novel.title}&quot; หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้
             </p>
             <div className="flex gap-4">
               <button

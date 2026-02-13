@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { Navbar } from '@/components/navbar'
 import { NovelCard } from '@/components/novel-card'
-import { BookOpen, TrendingUp, Clock, Sparkles } from 'lucide-react'
+import { BookOpen, TrendingUp, Grid3X3, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 // ดึงนิยายมาใหม่
@@ -11,7 +11,8 @@ async function getLatestNovels() {
     orderBy: { createdAt: 'desc' },
     include: {
       author: { select: { name: true } },
-      genres: { select: { name: true } },
+      genres: { select: { id: true, name: true } },
+      tags: { select: { id: true, name: true } },
       _count: { select: { chapters: true } }
     }
   })
@@ -26,7 +27,8 @@ async function getPopularNovels() {
     },
     include: {
       author: { select: { name: true } },
-      genres: { select: { name: true } },
+      genres: { select: { id: true, name: true } },
+      tags: { select: { id: true, name: true } },
       _count: { select: { chapters: true } }
     }
   })
@@ -132,7 +134,7 @@ export default async function HomePage() {
         {/* หมวดหมู่ */}
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-6">
-            <Clock className="h-6 w-6 text-indigo-600" />
+            <Grid3X3 className="h-6 w-6 text-indigo-600" />
             <h2 className="text-2xl font-bold text-gray-900">หมวดหมู่ทั้งหมด</h2>
           </div>
 

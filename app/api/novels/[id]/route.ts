@@ -2,7 +2,6 @@ import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
-// แก้ไขนิยาย
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -31,11 +30,11 @@ export async function PATCH(
   }
 
   if (novel.authorId !== dbUser.id) {
-    return NextResponse.json({ error: 'ไม่มีสิทธิ์แก้ไขนิยายนี้' }, { status: 403 })
+    return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
   }
 
   const body = await req.json()
-  const { title, description, status, coverImage, genreIds } = body
+  const { title, description, status, coverImage, genreIds, tags } = body
 
   const updatedNovel = await prisma.novel.update({
     where: { id },
@@ -47,19 +46,25 @@ export async function PATCH(
       ...(genreIds && {
         genres: {
           set: [],
-          connect: genreIds.map((gId: string) => ({ id: gId }))
+          connect: genreIds.map((gid: string) => ({ id: gid }))
+        }
+      }),
+      ...(tags !== undefined && {
+        tags: {
+          deleteMany: {},
+          create: tags.map((name: string) => ({ name }))
         }
       })
     },
     include: {
-      genres: true
+      genres: true,
+      tags: true
     }
   })
 
   return NextResponse.json(updatedNovel)
 }
 
-// ลบนิยาย
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -88,12 +93,12 @@ export async function DELETE(
   }
 
   if (novel.authorId !== dbUser.id) {
-    return NextResponse.json({ error: 'ไม่มีสิทธิ์ลบนิยายนี้' }, { status: 403 })
+    return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
   }
 
   await prisma.novel.delete({
     where: { id }
   })
 
-  return NextResponse.json({ message: 'ลบนิยายสำเร็จ' })
+  return NextResponse.json({ message: 'Novel deleted' })
 }

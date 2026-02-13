@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { ImageUpload } from './image-upload'
+import { TagInput } from './tag-input'
 
 interface Genre {
   id: string
@@ -23,6 +24,7 @@ export function NovelForm({ genres }: NovelFormProps) {
   const [description, setDescription] = useState('')
   const [coverImage, setCoverImage] = useState<string | null>(null)
   const [selectedGenres, setSelectedGenres] = useState<string[]>([])
+  const [tags, setTags] = useState<string[]>([])
 
   const toggleGenre = (genreId: string) => {
     setSelectedGenres((prev) =>
@@ -46,6 +48,7 @@ export function NovelForm({ genres }: NovelFormProps) {
           description,
           coverImage,
           genreIds: selectedGenres,
+          tags,
         }),
       })
 
@@ -55,7 +58,7 @@ export function NovelForm({ genres }: NovelFormProps) {
       }
 
       const novel = await response.json()
-      router.push(`/novels/${novel.id}`)
+      router.push(`/dashboard/novels/${novel.id}`)
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
@@ -136,6 +139,14 @@ export function NovelForm({ genres }: NovelFormProps) {
         <p className="text-sm text-gray-500 mt-2">
           เลือกแล้ว {selectedGenres.length} หมวดหมู่
         </p>
+      </div>
+
+      {/* Tags */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Tags
+        </label>
+        <TagInput tags={tags} onChange={setTags} />
       </div>
 
       {/* ปุ่ม Submit */}

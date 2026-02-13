@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
-  // ตรวจสอบว่า Login หรือยัง
   const { userId } = await auth()
 
   if (!userId) {
@@ -16,24 +15,20 @@ export async function POST(req: Request) {
 
   if (!dbUser) {
     const { currentUser } = await import('@clerk/nextjs/server')
-    const clerkUser = await currentUser()
-
-    if (!clerkUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+    const user = await currentUser()
 
     dbUser = await prisma.user.create({
       data: {
         clerkId: userId,
-        email: clerkUser.emailAddresses[0]?.emailAddress || '',
-        name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null,
-        avatar: clerkUser.imageUrl,
+        email: user?.emailAddresses[0]?.emailAddress || '',
+        name: user?.firstName || user?.username || 'ไม่ระบุชื่อ',
+        avatar: user?.imageUrl,
       }
     })
   }
 
   const body = await req.json()
-  const { title, description, coverImage, genreIds } = body
+  const { title, description, coverImage, genreIds, tags } = body
 
   if (!title || !description) {
     return NextResponse.json(
@@ -48,13 +43,20 @@ export async function POST(req: Request) {
       description,
       coverImage,
       authorId: dbUser.id,
-      genres: {
-        connect: genreIds?.map((id: string) => ({ id })) || []
-      }
+      ...(genreIds?.length > 0 && {
+        genres: {
+          connect: genreIds.map((id: string) => ({ id }))
+        }
+      }),
+      ...(tags?.length > 0 && {
+        tags: {
+          create: tags.map((name: string) => ({ name }))
+        }
+      })
     },
     include: {
-      author: true,
-      genres: true
+      genres: true,
+      tags: true
     }
   })
 

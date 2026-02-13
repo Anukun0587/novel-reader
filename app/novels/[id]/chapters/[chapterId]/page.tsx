@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { Navbar } from '@/components/navbar'
-import { ChevronLeft, ChevronRight, BookOpen, Home, Edit } from 'lucide-react'
+import { ChevronLeft, ChevronRight, BookOpen, Home} from 'lucide-react'
 import Link from 'next/link'
 import { ReadingTracker } from '@/components/reading-tracker'
+import { CommentSection } from '@/components/comment-section'
 
 async function getChapter(novelId: string, chapterId: string) {
     const chapter = await prisma.chapter.findUnique({
@@ -123,13 +124,6 @@ export default async function ReadChapterPage({
                         <p className="text-sm text-gray-500 mt-3">
                             {chapter.wordCount} คำ
                         </p>
-                        <Link
-                            href={`/novels/${novelId}/chapters/${chapterId}/edit`}
-                            className="inline-flex items-center gap-2 mt-4 px-4 py-2 text-sm border border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-50"
-                        >
-                            <Edit className="h-4 w-4" />
-                            แก้ไขตอน
-                        </Link>
                     </header>
 
                     {/* Content */}
@@ -186,6 +180,15 @@ export default async function ReadChapterPage({
                             <span>กลับหน้านิยาย</span>
                         </Link>
                     )}
+                </div>
+
+                {/* Comment Section - ย้ายมาอยู่ตรงนี้ */}
+                <div className="mt-8">
+                    <CommentSection
+                        novelId={novelId}
+                        chapterId={chapterId}
+                        title="ความคิดเห็นตอนนี้"
+                    />
                 </div>
             </main>
         </div>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import { BookOpen, PenTool, Search, Menu, X, Bookmark, Clock } from 'lucide-react'
+import { BookOpen, PenTool, Search, Menu, X, Bookmark, Clock, LayoutDashboard } from 'lucide-react'
 import { useState } from 'react'
 
 export function Navbar() {
@@ -61,6 +61,13 @@ export function Navbar() {
                         </SignedOut>
 
                         <SignedIn>
+                            <Link
+                                href="/dashboard"
+                                className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+                            >
+                                <LayoutDashboard className="h-4 w-4" />
+                                Dashboard
+                            </Link>
                             <Link
                                 href="/bookmarks"
                                 className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
@@ -147,6 +154,14 @@ export function Navbar() {
                             </SignedOut>
 
                             <SignedIn>
+                                <Link
+                                    href="/dashboard"
+                                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    <LayoutDashboard className="h-4 w-4" />
+                                    Dashboard
+                                </Link>
                                 <Link
                                     href="/bookmarks"
                                     className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
