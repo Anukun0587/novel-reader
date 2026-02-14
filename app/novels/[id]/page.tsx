@@ -13,7 +13,7 @@ async function getNovel(id: string) {
     where: { id },
     include: {
       author: {
-        select: { id: true, name: true, avatar: true }
+        select: { id: true, name: true, avatar: true }  // เพิ่ม id
       },
       genres: true,
       tags: true,
@@ -82,7 +82,16 @@ export default async function NovelDetailPage({
               {/* Author */}
               <div className="flex items-center gap-2 text-gray-600 mb-4">
                 <User className="h-4 w-4" />
-                <span>{novel.author?.name || 'ไม่ระบุชื่อ'}</span>
+                {novel.author?.id ? (
+                  <Link
+                    href={`/authors/${novel.author.id}`}
+                    className="hover:text-indigo-600 hover:underline"
+                  >
+                    {novel.author.name || 'ไม่ระบุชื่อ'}
+                  </Link>
+                ) : (
+                  <span>{novel.author?.name || 'ไม่ระบุชื่อ'}</span>
+                )}
               </div>
 
               {/* Stats */}
@@ -195,7 +204,7 @@ export default async function NovelDetailPage({
             showChapterInfo={true}
           />
         </div>
-        
+
       </main>
     </div>
   )

@@ -7,10 +7,10 @@ import Link from 'next/link'
 // ดึงนิยายมาใหม่
 async function getLatestNovels() {
   return await prisma.novel.findMany({
-    take: 10,
+    take: 5,
     orderBy: { createdAt: 'desc' },
     include: {
-      author: { select: { name: true } },
+      author: { select: { id: true, name: true } },
       genres: { select: { id: true, name: true } },
       tags: { select: { id: true, name: true } },
       _count: { select: { chapters: true } }
@@ -21,12 +21,12 @@ async function getLatestNovels() {
 // ดึงนิยายยอดนิยม (มีตอนเยอะที่สุด)
 async function getPopularNovels() {
   return await prisma.novel.findMany({
-    take: 10,
+    take: 5,
     orderBy: {
       chapters: { _count: 'desc' }
     },
     include: {
-      author: { select: { name: true } },
+      author: { select: { id: true, name: true } },
       genres: { select: { id: true, name: true } },
       tags: { select: { id: true, name: true } },
       _count: { select: { chapters: true } }

@@ -22,6 +22,8 @@ model User {
   readingHistory ReadingHistory[]
   bookmarks      Bookmark[]
   comments       Comment[]
+  followers      Follow[] @relation("Following")
+  following      Follow[] @relation("Followers")
 }
 
 enum Role {
@@ -139,4 +141,19 @@ model Comment {
   @@index([novelId])
   @@index([chapterId])
   @@index([userId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  followerId  String   // คนที่ติดตาม
+  follower    User     @relation("Followers", fields: [followerId], references: [id])
+
+  followingId String   // คนที่ถูกติดตาม
+  following   User     @relation("Following", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
 }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import { BookOpen, PenTool, Search, Menu, X, Bookmark, Clock, LayoutDashboard } from 'lucide-react'
+import { BookOpen, PenTool, Search, Menu, X, Bookmark, Clock, LayoutDashboard, User, Users } from 'lucide-react'
 import { useState } from 'react'
 
 export function Navbar() {
@@ -81,6 +81,13 @@ export function Navbar() {
                             >
                                 <Clock className="h-4 w-4" />
                                 ประวัติ
+                            </Link>
+                            <Link
+                                href="/following"
+                                className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+                            >
+                                <Users className="h-4 w-4" />
+                                ติดตาม
                             </Link>
                             <Link
                                 href="/write"
@@ -163,6 +170,13 @@ export function Navbar() {
                                     Dashboard
                                 </Link>
                                 <Link
+                                    href="/profile"
+                                    className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+                                >
+                                    <User className="h-4 w-4" />
+                                    โปรไฟล์
+                                </Link>
+                                <Link
                                     href="/bookmarks"
                                     className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                                     onClick={() => setIsMenuOpen(false)}
@@ -177,6 +191,14 @@ export function Navbar() {
                                 >
                                     <Clock className="h-4 w-4" />
                                     ประวัติ
+                                </Link>
+                                <Link
+                                    href="/following"
+                                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    <Users className="h-4 w-4" />
+                                    ติดตาม
                                 </Link>
                                 <Link
                                     href="/write"

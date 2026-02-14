@@ -8,6 +8,7 @@ interface NovelCardProps {
     title: string
     coverImage: string | null
     author: {
+      id?: string
       name: string | null
     } | null
     genres: {
@@ -50,9 +51,14 @@ export function NovelCard({ novel }: NovelCardProps) {
             {novel.title}
           </h3>
         </Link>
-        <p className="text-sm text-gray-500 mb-2">
-          {novel.author?.name || 'ไม่ระบุชื่อ'}
-        </p>
+        {novel.author && (
+          <Link
+            href={`/authors/${novel.author.id}`}
+            className="text-sm text-gray-500 hover:text-indigo-600 mb-2 block"
+          >
+            {novel.author.name || 'ไม่ระบุชื่อ'}
+          </Link>
+        )}
         <p className="text-xs text-gray-400 mb-2">
           {novel._count.chapters} ตอน
         </p>
